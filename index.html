@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Planner - Government Exam Preparation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Smart Study Planner</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#plan" class="nav-link">My Plan</a></li>
+                <li><a href="#progress" class="nav-link">Progress</a></li>
+                <li><a href="#materials" class="nav-link">Study Materials</a></li>
+                <li><a href="#news" class="nav-link">News</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="welcome-banner">
+                <h1>Welcome to Smart Study Planner</h1>
+                <p>Your AI-powered companion for government exam preparation</p>
+            </div>
+
+            <div class="exam-selection-card">
+                <h2><i class="fas fa-book-open"></i> Select Your Exam</h2>
+                <div class="exam-grid" id="examGrid">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="custom-exam-input">
+                    <input type="text" id="customExam" placeholder="Or enter custom exam name">
+                    <button id="customExamBtn" class="btn btn-secondary">Add Custom Exam</button>
+                </div>
+            </div>
+
+            <!-- Exam Details (shown after selection) -->
+            <div id="examDetails" class="exam-details-card hidden">
+                <h2 id="examTitle"></h2>
+                <div class="exam-info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Exam Pattern</h3>
+                        <div id="examPattern"></div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-list-check"></i>
+                        <h3>Syllabus Overview</h3>
+                        <div id="syllabusOverview"></div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>Important Details</h3>
+                        <div id="importantDetails"></div>
+                    </div>
+                </div>
+                
+                <div class="plan-options">
+                    <h2><i class="fas fa-route"></i> Choose Your Study Plan</h2>
+                    <div class="plan-cards">
+                        <div class="plan-card" id="userDefinedPlan">
+                            <div class="plan-icon">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                            <h3>User-Defined Plan</h3>
+                            <p>Choose your own timeline and pace</p>
+                            <button class="btn btn-primary">Select This Plan</button>
+                        </div>
+                        <div class="plan-card" id="smartAutoPlan">
+                            <div class="plan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3>Smart Auto Plan</h3>
+                            <p>AI-recommended personalized timeline</p>
+                            <button class="btn btn-primary">Select This Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Defined Plan Modal -->
+            <div id="userPlanModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2><i class="fas fa-calendar-days"></i> Create Your Study Plan</h2>
+                    <form id="userPlanForm">
+                        <div class="form-group">
+                            <label>Select Completion Timeline:</label>
+                            <div class="timeline-options">
+                                <label class="radio-card">
+                                    <input type="radio" name="timeline" value="30" required>
+                                    <div class="radio-content">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>1 Month</span>
+                                        <small>Intensive Study</small>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="timeline" value="90">
+                                    <div class="radio-content">
+                                        <i class="fas fa-fire"></i>
+                                        <span>3 Months</span>
+                                        <small>Fast Track</small>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="timeline" value="180">
+                                    <div class="radio-content">
+                                        <i class="fas fa-walking"></i>
+                                        <span>6 Months</span>
+                                        <small>Balanced Pace</small>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="timeline" value="365">
+                                    <div class="radio-content">
+                                        <i class="fas fa-seedling"></i>
+                                        <span>1 Year</span>
+                                        <small>Comprehensive</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Generate Study Plan</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Smart Auto Plan Modal -->
+            <div id="smartPlanModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2><i class="fas fa-robot"></i> AI-Powered Smart Plan</h2>
+                    <form id="smartPlanForm">
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Daily Available Study Hours:</label>
+                            <input type="number" name="dailyHours" min="1" max="16" required placeholder="e.g., 4">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-star"></i> Preferred Subjects (Select all that apply):</label>
+                            <div id="subjectPreferences" class="checkbox-group">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-triangle-exclamation"></i> Weak Areas (Optional):</label>
+                            <textarea name="weakAreas" rows="3" placeholder="e.g., Mathematics, Logical Reasoning"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-chart-line"></i> Previous Study Experience:</label>
+                            <select name="experience" required>
+                                <option value="">Select...</option>
+                                <option value="beginner">Beginner - Just Starting</option>
+                                <option value="intermediate">Intermediate - Some Preparation Done</option>
+                                <option value="advanced">Advanced - Significant Progress Made</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-check"></i> Study Consistency:</label>
+                            <select name="consistency" required>
+                                <option value="">Select...</option>
+                                <option value="low">Low - Study 2-3 days/week</option>
+                                <option value="medium">Medium - Study 4-5 days/week</option>
+                                <option value="high">High - Study 6-7 days/week</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Generate AI Plan</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Plan Section -->
+        <section id="plan" class="section">
+            <div class="section-header">
+                <h1><i class="fas fa-clipboard-list"></i> My Study Plan</h1>
+                <button id="editPlanBtn" class="btn btn-secondary"><i class="fas fa-edit"></i> Edit Plan</button>
+            </div>
+
+            <div class="plan-summary">
+                <div class="summary-card">
+                    <i class="fas fa-target"></i>
+                    <h3>Target Completion</h3>
+                    <p id="targetDate">-</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3>Days Remaining</h3>
+                    <p id="daysRemaining">-</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-percent"></i>
+                    <h3>Overall Progress</h3>
+                    <p id="overallProgress">0%</p>
+                </div>
+            </div>
+
+            <!-- Today's Plan -->
+            <div class="today-plan-card">
+                <h2><i class="fas fa-calendar-day"></i> Today's Plan - <span id="todayDate"></span></h2>
+                <div id="todayTasks" class="task-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Weekly Schedule -->
+            <div class="weekly-schedule-card">
+                <h2><i class="fas fa-calendar-week"></i> This Week's Schedule</h2>
+                <div id="weeklySchedule" class="weekly-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Full Schedule -->
+            <div class="full-schedule-card">
+                <h2><i class="fas fa-calendar"></i> Complete Study Schedule</h2>
+                <div class="schedule-filter">
+                    <button class="filter-btn active" data-filter="all">All Subjects</button>
+                    <div id="subjectFilters"></div>
+                </div>
+                <div id="fullSchedule" class="schedule-timeline">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress" class="section">
+            <div class="section-header">
+                <h1><i class="fas fa-chart-line"></i> Progress Tracker</h1>
+                <div class="date-range">
+                    <input type="date" id="startDate">
+                    <span>to</span>
+                    <input type="date" id="endDate">
+                    <button class="btn btn-secondary">Filter</button>
+                </div>
+            </div>
+
+            <!-- Performance Summary -->
+            <div class="performance-summary">
+                <h2><i class="fas fa-trophy"></i> Performance Summary</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Total Hours Studied</h3>
+                        <p class="stat-value" id="totalHours">0</p>
+                        <small>This month</small>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Topics Completed</h3>
+                        <p class="stat-value" id="topicsCompleted">0</p>
+                        <small>Out of <span id="totalTopics">0</span></small>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-fire"></i>
+                        <h3>Current Streak</h3>
+                        <p class="stat-value" id="currentStreak">0</p>
+                        <small>Days in a row</small>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-medal"></i>
+                        <h3>Best Streak</h3>
+                        <p class="stat-value" id="bestStreak">0</p>
+                        <small>Days record</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Charts -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3><i class="fas fa-pie-chart"></i> Subject-wise Completion</h3>
+                    <canvas id="subjectChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-bar"></i> Weekly Study Hours</h3>
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Progress by Subject -->
+            <div class="subject-progress-card">
+                <h2><i class="fas fa-book"></i> Subject-wise Progress</h2>
+                <div id="subjectProgress" class="progress-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-card">
+                <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                <div id="recentActivity" class="activity-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Study Materials Section -->
+        <section id="materials" class="section">
+            <div class="section-header">
+                <h1><i class="fas fa-book-open"></i> Study Materials</h1>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="materialSearch" placeholder="Search materials...">
+                </div>
+            </div>
+
+            <div class="materials-filter">
+                <button class="filter-btn active" data-type="all">All</button>
+                <button class="filter-btn" data-type="videos">Videos</button>
+                <button class="filter-btn" data-type="websites">Websites</button>
+                <button class="filter-btn" data-type="pdfs">PDFs</button>
+            </div>
+
+            <div id="materialsGrid" class="materials-grid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="section">
+            <div class="section-header">
+                <h1><i class="fas fa-newspaper"></i> Latest News & Updates</h1>
+                <button id="refreshNews" class="btn btn-secondary"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+
+            <div class="news-categories">
+                <button class="category-btn active" data-category="all">All News</button>
+                <button class="category-btn" data-category="exam">Exam Updates</button>
+                <button class="category-btn" data-category="current">Current Affairs</button>
+                <button class="category-btn" data-category="government">Government Jobs</button>
+            </div>
+
+            <div id="newsGrid" class="news-grid">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="news-sources">
+                <p>News Sources: BBC, Hindustan Times, India Today, Times of India, The Hindu</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification hidden">
+        <i class="fas fa-bell"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
